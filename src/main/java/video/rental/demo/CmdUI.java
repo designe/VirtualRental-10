@@ -9,11 +9,25 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
-public class CmdUI {
+public class CmdUI implements UIExpress {
 	private static DBManager db = DBManager.getInstance();
 	
 	private static Scanner scanner = new Scanner(System.in);
 
+	@Override
+	public void writeText(String msg) {
+		System.out.println(msg);
+	}
+
+	@Override
+	public String readText() {
+		return scanner.next();
+	}
+	
+	private int readInteger() {
+		return Integer.parseInt(readText());
+	}
+	
 	public void start() {
 		generateSamples();
 
@@ -52,23 +66,23 @@ public class CmdUI {
 				break;
 			}
 		}
-		System.out.println("Bye");
+		writeText("Bye");
 	}
 
 	public void clearRentals() {
-		System.out.println("Enter customer code: ");
-		int customerCode = scanner.nextInt();
+		writeText("Enter customer code: ");
+		int customerCode = readInteger();
 
 		Customer foundCustomer = db.findCustomerById(customerCode);
 
 		if (foundCustomer == null) {
-			System.out.println("No customer found");
+			writeText("No customer found");
 		} else {
-			System.out.println("Id: " + foundCustomer.getCode() + "\nName: " + foundCustomer.getName() + "\tRentals: "
+			writeText("Id: " + foundCustomer.getCode() + "\nName: " + foundCustomer.getName() + "\tRentals: "
 					+ foundCustomer.getRentals().size());
 			for (Rental rental : foundCustomer.getRentals()) {
-				System.out.print("\tTitle: " + rental.getVideo().getTitle() + " ");
-				System.out.print("\tPrice Code: " + rental.getVideo().getPriceCode());
+				writeText("\tTitle: " + rental.getVideo().getTitle() + " ");
+				writeText("\tPrice Code: " + rental.getVideo().getPriceCode());
 			}
 
 			List<Rental> rentals = new ArrayList<Rental>();
@@ -79,15 +93,15 @@ public class CmdUI {
 	}
 
 	public void returnVideo() {
-		System.out.println("Enter customer code: ");
-		int customerCode = scanner.nextInt();
+		writeText("Enter customer code: ");
+		int customerCode = readInteger();
 
-		Customer foundCustomer = findCustomerById(customerCode);
+		Customer foundCustomer = db.findCustomerById(customerCode);
 		if (foundCustomer == null)
 			return;
 
-		System.out.println("Enter video title to return: ");
-		String videoTitle = scanner.next();
+		writeText("Enter video title to return: ");
+		String videoTitle = readText();
 
 		List<Rental> customerRentals = foundCustomer.getRentals();
 
@@ -95,73 +109,73 @@ public class CmdUI {
 			if (rental.getVideo().getTitle().equals(videoTitle) && rental.getVideo().isRented()) {
 				Video video = rental.returnVideo();
 				video.setRented(false);
-				saveVideo(video);
+				db.saveVideo(video);
 				break;
 			}
 		}
 
-		saveCustomer(foundCustomer);
+		db.saveCustomer(foundCustomer);
 	}
 
 	public void listVideos() {
-		System.out.println("List of videos");
+		writeText("List of videos");
 
-		List<Video> videos = findAllVideos();
+		List<Video> videos = db.findAllVideos();
 
 		for (Video video : videos) {
-			System.out.println(
+			writeText(
 					"Video type: " + video.getVideoType() + 
 					"\tPrice code: " + video.getPriceCode() + 
 					"\tRating: " + video.getVideoRating() +
 					"\tTitle: " + video.getTitle()
 					); 
 		}
-		System.out.println("End of list");
+		writeText("End of list");
 	}
 
 	public void listCustomers() {
-		System.out.println("List of customers");
+		writeText("List of customers");
 
-		List<Customer> customers = findAllCustomers();
+		List<Customer> customers = db.findAllCustomers();
 
 		for (Customer customer : customers) {
-			System.out.println("ID: " + customer.getCode() + "\nName: " + customer.getName() + "\tRentals: "
+			writeText("ID: " + customer.getCode() + "\nName: " + customer.getName() + "\tRentals: "
 					+ customer.getRentals().size());
 			for (Rental rental : customer.getRentals()) {
-				System.out.print("\tTitle: " + rental.getVideo().getTitle() + " ");
-				System.out.print("\tPrice Code: " + rental.getVideo().getPriceCode());
-				System.out.println("\tReturn Status: " + rental.getStatus());
+				writeText("\tTitle: " + rental.getVideo().getTitle() + " ");
+				writeText("\tPrice Code: " + rental.getVideo().getPriceCode());
+				writeText("\tReturn Status: " + rental.getStatus());
 			}
 		}
-		System.out.println("End of list");
+		writeText("End of list");
 	}
 
 	public void getCustomerReport() {
-		System.out.println("Enter customer code: ");
-		int code = scanner.nextInt();
+		writeText("Enter customer code: ");
+		int code = readInteger();
 
-		Customer foundCustomer = findCustomerById(code);
+		Customer foundCustomer = db.findCustomerById(code);
 
 		if (foundCustomer == null) {
-			System.out.println("No customer found");
+			writeText("No customer found");
 		} else {
 			String result = foundCustomer.getReport();
-			System.out.println(result);
+			writeText(result);
 		}
 	}
 
 	public void rentVideo() {
-		System.out.println("Enter customer code: ");
-		int code = scanner.nextInt();
+		writeText("Enter customer code: ");
+		int code = readInteger();
 
-		Customer foundCustomer = findCustomerById(code);
+		Customer foundCustomer = db.findCustomerById(code);
 		if (foundCustomer == null)
 			return;
 
-		System.out.println("Enter video title to rent: ");
-		String videoTitle = scanner.next();
+		writeText("Enter video title to rent: ");
+		String videoTitle = readText();
 
-		Video foundVideo = findVideoByTitle(videoTitle);
+		Video foundVideo = db.findVideoByTitle(videoTitle);
 
 		if (foundVideo == null)
 			return;
@@ -171,8 +185,8 @@ public class CmdUI {
 
 		Boolean status = foundVideo.rentFor(foundCustomer);
 		if (status == true) {
-			saveVideo(foundVideo);
-			saveCustomer(foundCustomer);
+			db.saveVideo(foundVideo);
+			db.saveCustomer(foundCustomer);
 		} else {
 			return;
 		}
@@ -180,29 +194,29 @@ public class CmdUI {
 
 	public void register(String object) {
 		if (object.equals("customer")) {
-			System.out.println("Enter customer name: ");
-			String name = scanner.next();
+			writeText("Enter customer name: ");
+			String name = readText();
 
-			System.out.println("Enter customer code: ");
-			int code = scanner.nextInt();
+			writeText("Enter customer code: ");
+			int code = readInteger();
 
-			System.out.println("Enter customer birthday: ");
-			String dateOfBirth = scanner.next();
+			writeText("Enter customer birthday: ");
+			String dateOfBirth = readText();
 
 			Customer customer = new Customer(code, name, LocalDate.parse(dateOfBirth));
-			saveCustomer(customer);
+			db.saveCustomer(customer);
 		} else {
-			System.out.println("Enter video title to register: ");
-			String title = scanner.next();
+			writeText("Enter video title to register: ");
+			String title = readText();
 
-			System.out.println("Enter video type( 1 for VHD, 2 for CD, 3 for DVD ):");
-			int videoType = scanner.nextInt();
+			writeText("Enter video type( 1 for VHD, 2 for CD, 3 for DVD ):");
+			int videoType = readInteger();
 
-			System.out.println("Enter price code( 1 for Regular, 2 for New Release 3 for Children ):");
-			int priceCode = scanner.nextInt();
+			writeText("Enter price code( 1 for Regular, 2 for New Release 3 for Children ):");
+			int priceCode = readInteger();
 
-			System.out.println("Enter video rating( 1 for 12, 2 for 15, 3 for 18 ):");
-			int videoRating = scanner.nextInt();
+			writeText("Enter video rating( 1 for 12, 2 for 15, 3 for 18 ):");
+			int videoRating = readInteger();
 			
 			LocalDate registeredDate = LocalDate.now();
 			Rating rating;
@@ -213,23 +227,23 @@ public class CmdUI {
 			
 			Video video = new Video(title, videoType, priceCode, rating, registeredDate);
 
-			saveVideo(video);
+			db.saveVideo(video);
 		}
 	}
 
 	public int getCommand() {
-		System.out.println("\nSelect a command !");
-		System.out.println("\t 0. Quit");
-		System.out.println("\t 1. List customers");
-		System.out.println("\t 2. List videos");
-		System.out.println("\t 3. Register customer");
-		System.out.println("\t 4. Register video");
-		System.out.println("\t 5. Rent video");
-		System.out.println("\t 6. Return video");
-		System.out.println("\t 7. Show customer report");
-		System.out.println("\t 8. Show customer and clear rentals");
+		writeText("\nSelect a command !");
+		writeText("\t 0. Quit");
+		writeText("\t 1. List customers");
+		writeText("\t 2. List videos");
+		writeText("\t 3. Register customer");
+		writeText("\t 4. Register video");
+		writeText("\t 5. Rent video");
+		writeText("\t 6. Return video");
+		writeText("\t 7. Show customer report");
+		writeText("\t 8. Show customer and clear rentals");
 
-		int command = scanner.nextInt();
+		int command = readInteger();
 
 		return command;
 	}
@@ -238,9 +252,9 @@ public class CmdUI {
 		Customer james = new Customer(0, "James", LocalDate.parse("1975-05-15"));
 		Customer brown = new Customer(1, "Brown", LocalDate.parse("2002-03-17"));
         Customer shawn = new Customer(2, "Shawn", LocalDate.parse("2010-11-11"));
-		saveCustomer(james);
-		saveCustomer(brown);
-		saveCustomer(shawn);
+		db.saveCustomer(james);
+		db.saveCustomer(brown);
+		db.saveCustomer(shawn);
 
 		Video v1 = new Video("V1", Video.CD, Video.REGULAR, Rating.FIFTEEN, LocalDate.of(2018, 1, 1));
 		v1.setRented(true);
@@ -248,9 +262,9 @@ public class CmdUI {
 		v2.setRented(true);
         Video v3 = new Video("V3", Video.VHS, Video.NEW_RELEASE, Rating.EIGHTEEN, LocalDate.of(2018, 3, 1));
 
-		saveVideo(v1);
-		saveVideo(v2);
-		saveVideo(v3);
+		db.saveVideo(v1);
+		db.saveVideo(v2);
+		db.saveVideo(v3);
 
 		Rental r1 = new Rental(v1);
 		Rental r2 = new Rental(v2);
@@ -259,7 +273,8 @@ public class CmdUI {
 		rentals.add(r1);
 		rentals.add(r2);
 		james.setRentals(rentals);
-		saveCustomer(james);
+		db.saveCustomer(james);
 	}
+
 
 }
