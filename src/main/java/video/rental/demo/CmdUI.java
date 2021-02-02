@@ -10,9 +10,8 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 public class CmdUI {
-	// JPA EntityManager
-	private static EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
-
+	private static DBManager db = DBManager.getInstance();
+	
 	private static Scanner scanner = new Scanner(System.in);
 
 	public void start() {
@@ -60,7 +59,7 @@ public class CmdUI {
 		System.out.println("Enter customer code: ");
 		int customerCode = scanner.nextInt();
 
-		Customer foundCustomer = findCustomerById(customerCode);
+		Customer foundCustomer = db.findCustomerById(customerCode);
 
 		if (foundCustomer == null) {
 			System.out.println("No customer found");
@@ -75,7 +74,7 @@ public class CmdUI {
 			List<Rental> rentals = new ArrayList<Rental>();
 			foundCustomer.setRentals(rentals);
 
-			saveCustomer(foundCustomer);
+			db.saveCustomer(foundCustomer);
 		}
 	}
 
@@ -263,51 +262,4 @@ public class CmdUI {
 		saveCustomer(james);
 	}
 
-	/*
-	 * Database Access private methods
-	 */
-	private Customer findCustomerById(int code) {
-		em.getTransaction().begin();
-		Customer customer = em.find(Customer.class, code);
-		em.getTransaction().commit();
-		return customer;
-	}
-
-	private Video findVideoByTitle(String title) {
-		em.getTransaction().begin();
-		Video video = em.find(Video.class, title);
-		em.getTransaction().commit();
-		return video;
-	}
-
-	private List<Customer> findAllCustomers() {
-		TypedQuery<Customer> query = em.createQuery("SELECT c FROM Customer c", Customer.class);
-		return query.getResultList();
-	}
-
-	private List<Video> findAllVideos() {
-		TypedQuery<Video> query = em.createQuery("SELECT c FROM Video c", Video.class);
-		return query.getResultList();
-	}
-
-	private void saveCustomer(Customer customer) {
-		try {
-			em.getTransaction().begin();
-			em.persist(customer);
-			em.getTransaction().commit();
-		} catch (PersistenceException e) {
-			return;
-		}
-	}
-
-	private void saveVideo(Video video) {
-		try {
-			em.getTransaction().begin();
-			em.persist(video);
-			em.getTransaction().commit();
-		} catch (PersistenceException e) {
-			return;
-		}
-		return;
-	}
 }
