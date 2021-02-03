@@ -50,6 +50,14 @@ public class Customer {
 	}
 
 	public String getReport() {
+		return new TextReport(this).getMain();
+	}
+	
+	public String getHTMLReport() {
+		return new HTMLReport(this).getMain();
+	}
+	/*
+	public String getReport() {
 		String result = "Customer Report for " + getName() + "\n";
 
 		List<Rental> rentals = getRentals();
@@ -104,5 +112,6 @@ public class Customer {
 		}
 		return result;
 	}
+	*/
 
 }
