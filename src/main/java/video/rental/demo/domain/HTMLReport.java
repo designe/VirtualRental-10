@@ -20,5 +20,10 @@ public class HTMLReport extends Report {
 	String pushTab() {
 		return "<span class='tab'>&#9;</span>";
 	}
+	
+	@Override
+	public String toString() {
+		return super.content() ;
+	}
 
 }

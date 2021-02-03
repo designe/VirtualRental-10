@@ -51,53 +51,11 @@ public class Customer {
 
 	
 	public String getReport() {
-		return new TextReport(this).getMain();
+		return new TextReport(this).content();
 	}
 	
 	public String getHTMLReport() {
-		return new HTMLReport(this).getMain();
+		return new HTMLReport(this).content();
 	}
-	/*
-	public String getReport() {
-		String result = "Customer Report for " + getName() + "\n";
-
-		List<Rental> rentals = getRentals();
-
-		double totalCharge = 0;
-		int totalPoint = 0;
-
-		for (Rental each : rentals) {
-			double eachCharge = 0;
-			int eachPoint = 0;
-			int daysRented = 0;
-
-			daysRented = each.getDaysRented();
-
-			PriceCode priceCode = PriceCode.getPriceCode(each.getVideo().getPriceCode());
-			eachCharge = priceCode.getCharge(daysRented);
-			
-			eachPoint++;
-			if ((priceCode.getPriceCodeType()== priceCode.NEW_RELEASE))
-				eachPoint++;
-
-			if (daysRented > each.getDaysRentedLimit())
-				eachPoint -= Math.min(eachPoint, each.getVideo().getLateReturnPointPenalty());
-
-			result += "\t" + each.getVideo().getTitle() + "\tDays rented: " + daysRented + "\tCharge: " + eachCharge
-					+ "\tPoint: " + eachPoint + "\n";
-
-			totalCharge += eachCharge;
-			totalPoint += eachPoint;
-		}
-		
-		result += "Total charge: " + totalCharge + "\tTotal Point:" + totalPoint + "\n";
-		
-		String[] msg = {"Congrat! You earned one free coupon", "Congrat! You earned two free coupo"};
-		int[] points = {10,30};
-		new RewardPolicy(new Reward(2, msg, points)).displayIfRewardIsAvailable(totalPoint);
-		
-		return result;
-	}
-	*/
 
 }

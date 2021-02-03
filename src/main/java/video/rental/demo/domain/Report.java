@@ -26,7 +26,7 @@ public abstract class Report {
 		return "Total charge: " + totalCharge + pushTab() + "Total Point:" + totalPoint + pushLineBreak();
 	}
 	
-	public String getMain() {
+	public String content() {
 		String result = getHeader("Customer Report for ");
 
 		double totalCharge = 0;
@@ -71,12 +71,9 @@ public abstract class Report {
 		
 		result += getFooter(totalCharge, totalPoint);
 		
-		if (totalPoint >= 10) {
-			System.out.println("Congrat! You earned one free coupon");
-		}
-		if (totalPoint >= 30) {
-			System.out.println("Congrat! You earned two free coupon");
-		}
+		String[] msg = {"Congrat! You earned one free coupon", "Congrat! You earned two free coupon"};
+		int[] points = {10,30};
+		new RewardPolicy(new Reward(2, msg, points)).displayIfRewardIsAvailable(totalPoint);
 		
 		return result;
 	}
