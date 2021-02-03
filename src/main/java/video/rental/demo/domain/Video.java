@@ -18,7 +18,6 @@ public class Video {
 	private String title;
 	private Rating videoRating;
 	private int priceCode;
-
 	public static final int REGULAR = 1;
 	public static final int NEW_RELEASE = 2;
 	public static final int CHILDREN = 3;

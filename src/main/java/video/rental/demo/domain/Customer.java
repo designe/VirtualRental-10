@@ -64,24 +64,11 @@ public class Customer {
 
 			daysRented = each.getDaysRented();
 
-			switch (each.getVideo().getPriceCode()) {
-			case Video.REGULAR:
-				eachCharge += 2;
-				if (daysRented > 2)
-					eachCharge += (daysRented - 2) * 1.5;
-				break;
-			case Video.NEW_RELEASE:
-				eachCharge = daysRented * 3;
-				break;
-			case Video.CHILDREN:
-				eachCharge += 1.5;
-				if (daysRented > 3)
-					eachCharge += (daysRented - 3) * 1.5;
-				break;
-			}
+			PriceCode priceCode = PriceCode.getPriceCode(each.getVideo().getPriceCode());
+			eachCharge = priceCode.getCharge(daysRented);
 			
 			eachPoint++;
-			if ((each.getVideo().getPriceCode() == Video.NEW_RELEASE))
+			if ((priceCode.getPriceCodeType()== priceCode.NEW_RELEASE))
 				eachPoint++;
 
 			if (daysRented > each.getDaysRentedLimit())
