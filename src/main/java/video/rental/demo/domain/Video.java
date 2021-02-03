@@ -103,6 +103,23 @@ public class Video {
 		}
 	}
 
+	private Calendar getCurrentDate() {
+		Calendar calNow = Calendar.getInstance();
+		calNow.setTime(new java.util.Date());
+		return calNow;
+	}
+	
+	private int calculateAgeDifference(Calendar calDateOfBirth) {
+		int ageMo = (getCurrentDate().get(Calendar.MONTH) - calDateOfBirth.get(Calendar.MONTH));
+		int ageYr = (getCurrentDate().get(Calendar.YEAR) - calDateOfBirth.get(Calendar.YEAR));
+		
+		if (ageMo < 0) {
+			ageYr--;
+		}
+		
+		return ageYr;
+	}
+	
 	public boolean isUnderAge(Customer customer) {
 		// calculate customer's age in years and months
 
@@ -114,19 +131,7 @@ public class Video {
 			e.printStackTrace();
 		}
 
-		// get current date
-		Calendar calNow = Calendar.getInstance();
-		calNow.setTime(new java.util.Date());
-
-		// calculate age different in years and months
-		int ageYr = (calNow.get(Calendar.YEAR) - calDateOfBirth.get(Calendar.YEAR));
-		int ageMo = (calNow.get(Calendar.MONTH) - calDateOfBirth.get(Calendar.MONTH));
-
-		// decrement age in years if month difference is negative
-		if (ageMo < 0) {
-			ageYr--;
-		}
-		int age = ageYr;
+		int age = calculateAgeDifference(calDateOfBirth);
 
 		// determine if customer is under legal age for rating
 		switch (videoRating) {
