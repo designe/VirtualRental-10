@@ -49,6 +49,7 @@ public class Customer {
 		this.rentals = rentals;
 	}
 
+	
 	public String getReport() {
 		String result = "Customer Report for " + getName() + "\n";
 
@@ -95,13 +96,11 @@ public class Customer {
 		}
 		
 		result += "Total charge: " + totalCharge + "\tTotal Point:" + totalPoint + "\n";
-
-		if (totalPoint >= 10) {
-			System.out.println("Congrat! You earned one free coupon");
-		}
-		if (totalPoint >= 30) {
-			System.out.println("Congrat! You earned two free coupon");
-		}
+		
+		String[] msg = {"Congrat! You earned one free coupon", "Congrat! You earned two free coupo"};
+		int[] points = {10,30};
+		new RewardPolicy(new Reward(2, msg, points)).displayIfRewardIsAvailable(totalPoint);
+		
 		return result;
 	}
 
