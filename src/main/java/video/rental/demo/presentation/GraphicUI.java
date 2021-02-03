@@ -158,28 +158,28 @@ public class GraphicUI extends JFrame {
 	{
 		int code = Integer.parseInt(userCodeField.getText().toString());
 
-		String result = "...";
-		
+		String result = interactor.clearRentals(code);
 		textArea.append(result);
 	}
 
 	private void getCustomerReport() {
 		int code = Integer.parseInt(userCodeField.getText().toString());
 
-		String result = "...";
-
+		String result = interactor.getCustomerReport(code);
 		textArea.append(result);
 	}
 
 	private void listVideos() {
 		textArea.append("List of videos\n");
-		textArea.append("...");
+		String result = interactor.listVideos();
+		textArea.append(result);
 		textArea.append("End of list\n");
 	}
 
 	private void listCustomers() {
 		textArea.append("List of customers\n");
-		textArea.append("...");
+		String result = interactor.listCustomers();
+		textArea.append(result);
 		textArea.append("End of list\n");
 	}
 
@@ -187,14 +187,14 @@ public class GraphicUI extends JFrame {
 		int customerCode = Integer.parseInt(userCodeField.getText().toString());
 		String videoTitle = titleField.getText().toString();
 
-		// ...
+		interactor.returnVideo(customerCode, videoTitle);
 	}
 
 	private void rentVideo() {
 		int customerCode = Integer.parseInt(userCodeField.getText().toString());
 		String videoTitle = titleField.getText().toString();
 
-		// ...
+		interactor.returnVideo(customerCode, videoTitle);
 	}
 
 	private void registerUser() {
@@ -202,7 +202,7 @@ public class GraphicUI extends JFrame {
 		String name = nameField.getText().toString();
 		String birthday = birthdayField.getText().toString();
 
-		// ...
+		interactor.registerCustomer(name, code, birthday);
 	}
 
 	private void registerVideo() {
@@ -234,7 +234,7 @@ public class GraphicUI extends JFrame {
 		else // Eighteen
 			videoRating = 3;
 		
-		// ...
+		interactor.registerVideo(title, videoType, priceCode, videoRating);
 	}
 
 	private void makeButton(String title, ActionListener listener, int x, int y, int w, int h) {
