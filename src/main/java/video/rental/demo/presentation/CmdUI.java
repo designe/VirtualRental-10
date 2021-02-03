@@ -1,6 +1,8 @@
-package video.rental.demo;
+package video.rental.demo.presentation;
 
 import java.util.Scanner;
+
+import video.rental.demo.application.Interactor;
 
 public class CmdUI {
 	private static Scanner scanner = new Scanner(System.in);
