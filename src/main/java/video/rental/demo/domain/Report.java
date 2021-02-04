@@ -26,6 +26,11 @@ public abstract class Report {
 		return "Total charge: " + totalCharge + pushTab() + "Total Point:" + totalPoint + pushLineBreak();
 	}
 	
+	private String extractFinalResult(String videoTitle, int daysRented, double rentalCharge, int rentalPoint) {
+		return pushTab() + videoTitle + pushTab() + "Days rented: " + daysRented + pushTab() + "Charge: " + rentalCharge
+				+ pushTab() + "Point: " + rentalPoint + pushLineBreak();
+	}
+	
 	public String content() {
 		String result = getHeader("Customer Report for ");
 
@@ -46,8 +51,7 @@ public abstract class Report {
 			if (rental.isRentDelay())
 				rentalPoint -= Math.min(rentalPoint, rental.getVideo().getLateReturnPointPenalty());
 
-			result += pushTab() + rental.getVideo().getTitle() + pushTab() + "Days rented: " + daysRented + pushTab() + "Charge: " + rentalCharge
-					+ pushTab() + "Point: " + rentalPoint + pushLineBreak();
+			result += extractFinalResult(rental.getVideo().getTitle(), daysRented, rentalCharge, rentalPoint);
 
 			totalCharge += rentalCharge;
 			totalPoint += rentalPoint;
