@@ -68,6 +68,10 @@ public class Rental {
 		this.returnDate = returnDate;
 	}
 
+	public boolean isRentDelay() {
+		return (getDaysRented() > getDaysRentedLimit()) ? true : false;
+	}
+	
 	public int getDaysRentedLimit() {
 		int limit = 0;
 		switch (video.getVideoType()) {

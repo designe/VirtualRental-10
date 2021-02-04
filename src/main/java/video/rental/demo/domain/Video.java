@@ -17,7 +17,7 @@ public class Video {
 	@Id
 	private String title;
 	private Rating videoRating;
-	private int priceCode;
+	private PriceCode priceCode;
 	public static final int REGULAR = 1;
 	public static final int NEW_RELEASE = 2;
 	public static final int CHILDREN = 3;
@@ -36,7 +36,7 @@ public class Video {
 	public Video(String title, int videoType, int priceCode, Rating videoRating, LocalDate registeredDate) {
 		this.title = title;
 		this.videoType = videoType;
-		this.priceCode = priceCode;
+		setPriceCode(priceCode);
 		this.videoRating = videoRating;
 		this.registeredDate = registeredDate;
 		this.rented = false;
@@ -58,12 +58,22 @@ public class Video {
 		return pentalty;
 	}
 
-	public int getPriceCode() {
+	public PriceCode getPriceCode() {
 		return priceCode;
 	}
 
-	public void setPriceCode(int priceCode) {
-		this.priceCode = priceCode;
+	public void setPriceCode(int code) {
+		switch(code) {
+		case REGULAR:
+			priceCode = new RegularPriceCode();
+			break;
+		case NEW_RELEASE:
+			priceCode = new NewPriceCode();
+			break;
+		case CHILDREN:
+			priceCode = new ChildrenPriceCode();
+			break;
+		}
 	}
 
 	public String getTitle() {

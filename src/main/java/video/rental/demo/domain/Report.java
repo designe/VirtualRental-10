@@ -32,41 +32,25 @@ public abstract class Report {
 		double totalCharge = 0;
 		int totalPoint = 0;
 
-		for (Rental each : mCustomer.getRentals()) {
-			double eachCharge = 0;
-			int eachPoint = 0;
-			int daysRented = 0;
-
-			daysRented = each.getDaysRented();
-
-			switch (each.getVideo().getPriceCode()) {
-			case Video.REGULAR:
-				eachCharge += 2;
-				if (daysRented > 2)
-					eachCharge += (daysRented - 2) * 1.5;
-				break;
-			case Video.NEW_RELEASE:
-				eachCharge = daysRented * 3;
-				break;
-			case Video.CHILDREN:
-				eachCharge += 1.5;
-				if (daysRented > 3)
-					eachCharge += (daysRented - 3) * 1.5;
-				break;
-			}
+		for (Rental rental : mCustomer.getRentals()) {
+			double rentalCharge = 0;
+			int rentalPoint = 1; // 기본적으로 포인트는 1점부터 시작
+			int daysRented = rental.getDaysRented();
 			
-			eachPoint++;
-			if ((each.getVideo().getPriceCode() == Video.NEW_RELEASE))
-				eachPoint++;
+			PriceCode priceCode = rental.getVideo().getPriceCode();
+			
+			rentalCharge = priceCode.getCharge(daysRented);
+			if (priceCode.getClass().equals(RegularPriceCode.class))
+				rentalPoint++;
 
-			if (daysRented > each.getDaysRentedLimit())
-				eachPoint -= Math.min(eachPoint, each.getVideo().getLateReturnPointPenalty());
+			if (rental.isRentDelay())
+				rentalPoint -= Math.min(rentalPoint, rental.getVideo().getLateReturnPointPenalty());
 
-			result += pushTab() + each.getVideo().getTitle() + pushTab() + "Days rented: " + daysRented + pushTab() + "Charge: " + eachCharge
-					+ pushTab() + "Point: " + eachPoint + pushLineBreak();
+			result += pushTab() + rental.getVideo().getTitle() + pushTab() + "Days rented: " + daysRented + pushTab() + "Charge: " + rentalCharge
+					+ pushTab() + "Point: " + rentalPoint + pushLineBreak();
 
-			totalCharge += eachCharge;
-			totalPoint += eachPoint;
+			totalCharge += rentalCharge;
+			totalPoint += rentalPoint;
 		}
 		
 		result += getFooter(totalCharge, totalPoint);
