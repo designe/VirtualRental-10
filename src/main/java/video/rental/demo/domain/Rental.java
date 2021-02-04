@@ -72,6 +72,17 @@ public class Rental {
 		return (getDaysRented() > getDaysRentedLimit()) ? true : false;
 	}
 	
+	public int getRentalPoint() {
+		int rentalPoint = 1;
+		if(getVideo().getPriceCode().equals(RegularPriceCode.class)
+				rentalPoint++;
+		
+		if(isRentDelay())
+			rentalPoint -= Math.min(rentalPoint, getVideo().getLateReturnPointPenalty());	
+		
+		return rentalPoint;
+	}
+	
 	public int getDaysRentedLimit() {
 		int limit = 0;
 		switch (video.getVideoType()) {
