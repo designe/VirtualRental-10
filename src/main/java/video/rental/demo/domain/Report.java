@@ -39,17 +39,12 @@ public abstract class Report {
 
 		for (Rental rental : mCustomer.getRentals()) {
 			double rentalCharge = 0;
-			int rentalPoint = 1; // 기본적으로 포인트는 1점부터 시작
+			int rentalPoint = rental.getRentalPoint(); // 기본적으로 포인트는 1점부터 시작
 			int daysRented = rental.getDaysRented();
 			
 			PriceCode priceCode = rental.getVideo().getPriceCode();
 			
 			rentalCharge = priceCode.getCharge(daysRented);
-			if (priceCode.getClass().equals(RegularPriceCode.class))
-				rentalPoint++;
-
-			if (rental.isRentDelay())
-				rentalPoint -= Math.min(rentalPoint, rental.getVideo().getLateReturnPointPenalty());
 
 			result += extractFinalResult(rental.getVideo().getTitle(), daysRented, rentalCharge, rentalPoint);
 
